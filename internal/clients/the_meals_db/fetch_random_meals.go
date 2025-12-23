@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	TheMealDbStatusNotOkError = errors.New("Status not 200")
+	TheMealDbStatusIsNotOkError = errors.New("Status is not 200(((")
 )
 
-func (c *Client) FetchRandomMeals(ctx context.Context) (models.Meal, error) {
+func (c *clientImpl) FetchRandomMeals(ctx context.Context) (models.Meal, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.config.Url(), nil)
 
 	if err != nil {
@@ -32,7 +32,7 @@ func (c *Client) FetchRandomMeals(ctx context.Context) (models.Meal, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return models.Meal{}, err
+		return models.Meal{}, TheMealDbStatusIsNotOkError
 	}
 
 	var mealDto dto.RandomMealResponse
@@ -41,5 +41,10 @@ func (c *Client) FetchRandomMeals(ctx context.Context) (models.Meal, error) {
 		return models.Meal{}, err
 	}
 
-	return mappers.TransportMealToBuisnessMeal(mealDto.Meals[0]), nil
+	meal, err := mappers.TransportMealToBuisnessMeal(mealDto.Meals[0])
+	if err != nil {
+		return models.Meal{}, err
+	}
+
+	return meal, nil
 }

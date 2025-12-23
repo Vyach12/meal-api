@@ -1,7 +1,7 @@
 package mappers
 
 import (
-	"log"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -9,11 +9,11 @@ import (
 	buisness "github.com/Vyach12/meal-api/internal/models"
 )
 
-func TransportMealToBuisnessMeal(meal dto.Meal) buisness.Meal {
+func TransportMealToBuisnessMeal(meal dto.Meal) (buisness.Meal, error) {
 
 	id, err := strconv.Atoi(meal.IDMeal)
 	if err != nil {
-		log.Fatal("Сын шлюхи")
+		return buisness.Meal{}, fmt.Errorf("can not convert id for meal from dto: %w", err)
 	}
 
 	return buisness.Meal{
@@ -30,5 +30,5 @@ func TransportMealToBuisnessMeal(meal dto.Meal) buisness.Meal {
 		Measure:       meal.GetMeasures(),
 		Source:        meal.StrSource,
 		ImageSource:   meal.StrImageSource,
-	}
+	}, nil
 }

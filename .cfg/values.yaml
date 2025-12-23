@@ -1,4 +1,5 @@
-env: 'local'
+application_name: 'meal-api'
+env: 'LOCAL'
 
 integrations:
   the_meal_db:
