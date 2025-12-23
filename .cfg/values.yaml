@@ -1,7 +1,0 @@
-application_name: 'meal-api'
-env: 'LOCAL'
-
-integrations:
-  the_meal_db:
-    url: 'https://www.themealdb.com/api/json/v1/1/random.php'
-    timeout: 4s
