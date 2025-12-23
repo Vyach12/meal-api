@@ -12,7 +12,7 @@ import (
 type Config struct {
 	ApplicationName string                 `yaml:"application_name"`
 	Env             string                 `yaml:"env" env-default:"LOCAL"`
-	integration     map[string]Integration `yaml:"integrations"`
+	Integration     map[string]Integration `yaml:"integrations"`
 }
 
 type Integration struct {
@@ -34,11 +34,11 @@ func NewConfig(configPath string) *Config {
 	return &cfg
 }
 
-func (c *Config) GetIntegration(name string) (*Integration, error) {
-	integration, exists := c.integration[name]
+func (c *Config) GetIntegration(name string) (Integration, error) {
+	i, exists := c.Integration[name]
 	if !exists {
-		return nil, fmt.Errorf("integration '%s' not found in config", name)
+		return Integration{}, fmt.Errorf("integration '%s' not found in config", name)
 	}
 
-	return &integration, nil
+	return i, nil
 }

@@ -3,7 +3,6 @@ package models
 type Meal struct {
 	Id                       int64
 	MealName                 string
-	MealAlternate            *string
 	Category                 string
 	Area                     string
 	Instructions             string

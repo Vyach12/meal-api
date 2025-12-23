@@ -19,7 +19,6 @@ func TransportMealToBuisnessMeal(meal dto.Meal) (buisness.Meal, error) {
 	return buisness.Meal{
 		Id:            int64(id),
 		MealName:      meal.StrMeal,
-		MealAlternate: meal.StrMealAlternate,
 		Category:      meal.StrCategory,
 		Area:          meal.StrArea,
 		Instructions:  meal.StrInstructions,
