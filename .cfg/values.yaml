@@ -1,3 +1,6 @@
-meal_url:
-  type: "string"
-  value: "https://www.themealdb.com/api/json/v1/1/random.php"
+env: 'local'
+
+integrations:
+  the_meal_db:
+    url: 'https://www.themealdb.com/api/json/v1/1/random.php'
+    timeout: 4s

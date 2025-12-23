@@ -13,29 +13,33 @@ import (
 )
 
 var (
-	MealError = errors.New("Ашибка")
+	TheMealDbStatusNotOkError = errors.New("Status not 200")
 )
 
-func (c *Client) FetchRandomMeals(ctx context.Context) ([]models.Meal, error) {
-	resp, err := http.NewRequestWithContext(ctx, http.MethodGet, c.config.Url(), nil)
+func (c *Client) FetchRandomMeals(ctx context.Context) (models.Meal, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.config.Url(), nil)
 
 	if err != nil {
 		log.Fatal(err)
-		return []models.Meal{}, err
+		return models.Meal{}, err
+	}
+
+	resp, err := c.cl.Do(req)
+	if err != nil {
+		log.Fatal(err)
+		return models.Meal{}, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return models.Meal{}, err
+	}
 
 	var mealDto dto.RandomMealResponse
 	if err := json.NewDecoder(resp.Body).Decode(&mealDto); err != nil {
 		log.Fatal(err)
-		return []models.Meal{}, err
+		return models.Meal{}, err
 	}
 
-	var buisnessMeals = make([]models.Meal, len(mealDto.Meals))
-
-	for _, m := range mealDto.Meals {
-		buisnessMeals = append(buisnessMeals, mappers.TransportMealToBuisnessMeal(m))
-	}
-
-	return buisnessMeals, nil
+	return mappers.TransportMealToBuisnessMeal(mealDto.Meals[0]), nil
 }
