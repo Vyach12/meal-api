@@ -27,7 +27,7 @@ func (c *configImpl) Timeout() time.Duration {
 
 func NewConfig(ctx context.Context, cfg config.Config) (*configImpl, error) {
 	c, err := cfg.GetIntegration(integrationName)
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to get %s integration config: %w",
 			integrationName, err)
