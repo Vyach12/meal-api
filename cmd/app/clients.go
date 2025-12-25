@@ -5,13 +5,17 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Vyach12/meal-api/internal/clients"
 	themealsdb_client "github.com/Vyach12/meal-api/internal/clients/the_meals_db"
+	"github.com/Vyach12/meal-api/internal/services/business"
 	"github.com/gomeal/config/pkg/config"
 )
 
 type Clients struct {
-	MealClient clients.MealClient
+	MealClient MealClient
+}
+
+type MealClient interface {
+	FetchRandomMeals(ctx context.Context) (business.Meal, error)
 }
 
 func InitClients(ctx context.Context, provider config.Provider) Clients {

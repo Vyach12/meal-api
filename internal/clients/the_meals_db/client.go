@@ -1,13 +1,25 @@
 package themealsdb_client
 
-import "github.com/Vyach12/meal-api/internal/clients"
+import (
+	"net/http"
+	"time"
+)
 
 type clientImpl struct {
-	cl     clients.HTTPClient
-	config clients.TheMealsDbClientConfig
+	cl     HTTPClient
+	config TheMealsDbClientConfig
 }
 
-func New(config clients.TheMealsDbClientConfig, httpClient clients.HTTPClient) *clientImpl {
+type TheMealsDbClientConfig interface {
+	Url() string
+	Timeout() time.Duration
+}
+
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+func New(config TheMealsDbClientConfig, httpClient HTTPClient) *clientImpl {
 	return &clientImpl{
 		config: config,
 		cl:     httpClient,
