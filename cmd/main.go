@@ -11,7 +11,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	config := config.NewConfig("../.cfg/values.yaml")
+	config := config.NewConfig(".cfg/values.yaml")
 
 	var (
 		clients = app.InitClients(ctx, *config)
