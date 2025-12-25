@@ -2,14 +2,10 @@ package themealsdb_client
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/Vyach12/meal-api/internal/config"
-)
-
-var (
-	integrationName = "the_meal_db"
+	"github.com/Vyach12/meal-api/internal/app_config"
+	"github.com/gomeal/config/pkg/config"
 )
 
 type configImpl struct {
@@ -25,13 +21,9 @@ func (c *configImpl) Timeout() time.Duration {
 	return c.timeout
 }
 
-func NewConfig(ctx context.Context, cfg config.Config) (*configImpl, error) {
-	c, err := cfg.GetIntegration(integrationName)
+func NewConfig(ctx context.Context, provider config.Provider) (*configImpl, error) {
+	c := provider.GetConfigClient().GetValue(app_config.TheMealsDbUrl).String()
+	t := provider.GetConfigClient().GetValue(app_config.TheMealsDbTimeout).Duration()
 
-	if err != nil {
-		return nil, fmt.Errorf("failed to get %s integration config: %w",
-			integrationName, err)
-	}
-
-	return &configImpl{c.Url, c.Timeout}, nil
+	return &configImpl{c, t}, nil
 }

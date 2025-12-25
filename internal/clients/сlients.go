@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	models "github.com/Vyach12/meal-api/internal/models"
+	"github.com/Vyach12/meal-api/internal/services/business"
 )
 
 type HTTPClient interface {
@@ -12,5 +12,5 @@ type HTTPClient interface {
 }
 
 type MealClient interface {
-	FetchRandomMeals(ctx context.Context) (models.Meal, error)
+	FetchRandomMeals(ctx context.Context) (business.Meal, error)
 }

@@ -6,20 +6,20 @@ import (
 	"log"
 
 	"github.com/Vyach12/meal-api/cmd/app"
-	"github.com/Vyach12/meal-api/internal/config"
+	"github.com/gomeal/config/pkg/config"
 )
 
 func main() {
 	ctx := context.Background()
-	config := config.NewConfig("../.cfg/values.yaml")
+
+	provider := config.NewProvider(".cfg/values.yaml")
 
 	var (
-		clients = app.InitClients(ctx, *config)
+		clients = app.InitClients(ctx, provider)
 	)
 
-	var v, err = clients.MealClient.FetchRandomMeals(ctx)
-
-	if(err != nil) {
+	v, err := clients.MealClient.FetchRandomMeals(ctx)
+	if err != nil {
 		log.Fatal(err)
 	}
 
