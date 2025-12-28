@@ -3,7 +3,7 @@ package meal_domain_mappers
 import (
 	"database/sql"
 
-	domain "github.com/Vyach12/meal-api/internal/repositories/models"
+	domain "github.com/Vyach12/meal-api/internal/repositories/meal/models"
 	"github.com/Vyach12/meal-api/internal/services/business"
 	"github.com/samber/lo"
 )

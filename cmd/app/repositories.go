@@ -5,6 +5,7 @@ import (
 	"log"
 
 	app_config "github.com/Vyach12/meal-api/internal/config"
+	transaction "github.com/Vyach12/meal-api/internal/repositories"
 	meal_repo "github.com/Vyach12/meal-api/internal/repositories/meal"
 	"github.com/Vyach12/meal-api/internal/services/business"
 	"github.com/gomeal/config/pkg/config"
@@ -12,7 +13,7 @@ import (
 )
 
 type MealRepository interface {
-	CreateMeals(ctx context.Context, meals []business.Meal) ([]business.Meal, error)
+	CreateMealsIngredient(ctx context.Context, meals []business.MealIngredient) ([]business.MealIngredient, error)
 }
 
 type Repositories struct {
@@ -30,6 +31,6 @@ func InitRepo(ctx context.Context, provider config.Provider) Repositories {
 	}
 
 	return Repositories{
-		Meal: meal_repo.New(pool),
+		Meal: meal_repo.New(pool, transaction.New(pool)),
 	}
 }

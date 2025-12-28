@@ -17,7 +17,7 @@ func main() {
 
 	var (
 		repositories = app.InitRepo(ctx, provider)
-		clients = app.InitClients(ctx, provider)
+		clients      = app.InitClients(ctx, provider)
 	)
 
 	r, err := clients.MealClient.FetchRandomMeals(ctx)
@@ -27,7 +27,12 @@ func main() {
 
 	//fmt.Println(r)
 
-	v, err := repositories.Meal.CreateMeals(ctx, append([]business.Meal{}, r))
+	var mealIngredients = make([]business.MealIngredient, 0)
+	for _, ingredient := range r.Ingredients {
+		mealIngredients = append(mealIngredients, ingredient)
+	}
+
+	v, err := repositories.Meal.CreateMealsIngredient(ctx, mealIngredients)
 	if err != nil {
 		log.Fatal(err)
 	}
