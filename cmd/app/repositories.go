@@ -13,7 +13,7 @@ import (
 )
 
 type MealRepository interface {
-	CreateMealsIngredient(ctx context.Context, meals []business.MealIngredient) ([]business.MealIngredient, error)
+	CreateMeals(ctx context.Context, meals []business.Meal) ([]business.Meal, error)
 }
 
 type Repositories struct {

@@ -27,12 +27,7 @@ func main() {
 
 	//fmt.Println(r)
 
-	var mealIngredients = make([]business.MealIngredient, 0)
-	for _, ingredient := range r.Ingredients {
-		mealIngredients = append(mealIngredients, ingredient)
-	}
-
-	v, err := repositories.Meal.CreateMealsIngredient(ctx, mealIngredients)
+	v, err := repositories.Meal.CreateMeals(ctx, []business.Meal {r})
 	if err != nil {
 		log.Fatal(err)
 	}
