@@ -10,11 +10,15 @@ import (
 )
 
 func (r *repositoryImpl) CreateMeals(ctx context.Context, meals []business.Meal) ([]business.Meal, error) {
+	//TODO: по хорошему сделать создание n meals в одном запросе, а не в разных, если не в падлу будет
 	createdMeals := make([]business.Meal, 0, len(meals))
 
 	txErr := r.transactor.Transaction(ctx, func(ctx context.Context) error {
 		for _, meal := range meals {
-			m, _ := r.createMeal(ctx, meal)
+			m, err := r.createMeal(ctx, meal)
+			if err != nil {
+				return err
+			}
 			createdMeals = append(createdMeals, m)
 		}
 		return nil
@@ -28,9 +32,20 @@ func (r *repositoryImpl) CreateMeals(ctx context.Context, meals []business.Meal)
 
 func (r *repositoryImpl) createMeal(ctx context.Context, meal business.Meal) (business.Meal, error) {
 	//TODO: Добавить обработку
-	category, _ := r.createMealCategory(ctx, meal.Category)
-	cuisine, _ := r.createMealCuisine(ctx, meal.Cuisine)
-	ingrs, _ := r.createMealsIngredient(ctx, meal.Ingredients)
+	category, err := r.createMealCategory(ctx, meal.Category)
+	if err != nil {
+		return business.Meal{}, err
+	}
+
+	cuisine, err := r.createMealCuisine(ctx, meal.Cuisine)
+	if err != nil {
+		return business.Meal{}, err
+	}
+	
+	ingrs, err := r.createMealsIngredient(ctx, meal.Ingredients)
+	if err != nil {
+		return business.Meal{}, err
+	}
 	r.saveMeal(ctx, meal, category.ID, cuisine.ID)
 
 	for i, ingr := range ingrs {
@@ -149,21 +164,12 @@ func (r *repositoryImpl) createMealIngredientLink(ctx context.Context, mealId in
 }
 
 func (r *repositoryImpl) saveMeal(ctx context.Context, meal business.Meal, categoryID, cuisineID int64) (int64, error) {
-	_ = `ON CONFLICT (external_id) DO UPDATE SET
-		name = EXCLUDED.name,
-		category_id = EXCLUDED.category_id,
-		cuisine_id = EXCLUDED.cuisine_id,
-		instructions = EXCLUDED.instructions,
-		image_url = EXCLUDED.image_url,
-		tags = EXCLUDED.tags,
-		youtube_url = EXCLUDED.youtube_url,
-		recipe_url = EXCLUDED.recipe_url,
-		updated_at = ?`
 
 	query, args, err := sq.Insert("meals").
 		PlaceholderFormat(sq.Dollar).
 		Columns("external_id", "name", "category_id", "cuisine_id", "instructions", "image_url", "tags", "youtube_url", "recipe_url").
 		Values(meal.ExternalID, meal.Name, categoryID, cuisineID, meal.Instructions, meal.ImageURL, meal.Tags, meal.YouTubeURL, meal.RecipeURL).
+		Suffix("ON CONFLICT (external_id) DO UPDATE SET updated_at = ?").
 		Suffix("RETURNING id, name").
 		ToSql()
 
