@@ -1,0 +1,23 @@
+{
+	"meals": [
+		{
+			"idMeal": "53367",
+			"strMeal": "Chicken Fried Rice",
+			"strMealAlternate": null,
+			"strCategory": "Chicken",
+			"strArea": "Chinese",
+			"strInstructions": "Fried rice is best made with leftover..",
+			"strMealThumb": "https://www.themealdb.com/images/media/meals/wuyd2h1765655837.jpg",
+			"strTags": null,
+			"strYoutube": "https://www.youtube.com/watch?v=mUr-7wjhHuU",
+			"strIngredient1": "Chicken Thighs",
+			"strIngredient2": "Salt",
+			"strMeasure1": "1 lb",
+			"strMeasure2": "1 tsp",
+			"strSource": "https://www.simplyrecipes.com/recipes/chicken_fried_rice/",
+			"strImageSource": null,
+			"strCreativeCommonsConfirmed": null,
+			"dateModified": "2025-12-13 19:55:26"
+		}
+	]
+}

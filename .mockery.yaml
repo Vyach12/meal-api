@@ -1,0 +1,13 @@
+dir: "{{.InterfaceDir}}/mocks"
+filename: "mock_{{.InterfaceName}}.go"
+pkgname: "mocks"
+log-level: info
+
+packages:
+  github.com/Vyach12/meal-api/internal/clients/the_meals_db:
+    config:
+      include-interface-regex: ".*Client$|.*Config$"
+  
+  github.com/Vyach12/meal-api/internal/repositories:
+    config:
+      include-interface-regex: ".*Repository$"

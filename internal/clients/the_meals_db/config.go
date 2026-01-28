@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Vyach12/meal-api/internal/app_config"
+	app_config "github.com/Vyach12/meal-api/internal/config"
 	"github.com/gomeal/config/pkg/config"
 )
 
