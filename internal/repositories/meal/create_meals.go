@@ -63,11 +63,11 @@ func (r *repositoryImpl) createMealsIngredient(ctx context.Context, ingredients 
 	for _, meal := range ingredients {
 		insertBuilder = insertBuilder.Values(meal.Name)
 	}
+	
 	query, args, err := insertBuilder.
 		Suffix("ON CONFLICT (name) DO UPDATE SET updated_at = ?", time.Now()).
 		Suffix("RETURNING id, name").
 		ToSql()
-
 	if err != nil {
 		log.Println("Ошибка формирования запроса")
 		return nil, err
@@ -172,7 +172,6 @@ func (r *repositoryImpl) saveMeal(ctx context.Context, meal business.Meal, categ
 		Suffix("ON CONFLICT (external_id) DO UPDATE SET updated_at = ?").
 		Suffix("RETURNING id, name").
 		ToSql()
-
 	if err != nil {
 		return 0, err
 	}
