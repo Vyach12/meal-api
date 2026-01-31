@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	domain "github.com/Vyach12/meal-api/internal/repositories/meal/models"
-	business "github.com/Vyach12/meal-api/internal/services/model"
+	business "github.com/Vyach12/meal-api/internal/services/meal_fetcher/model"
 	"github.com/samber/lo"
 )
 

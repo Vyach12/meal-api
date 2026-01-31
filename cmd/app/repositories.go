@@ -7,7 +7,7 @@ import (
 	app_config "github.com/Vyach12/meal-api/internal/config"
 	transaction "github.com/Vyach12/meal-api/internal/repositories"
 	meal_repo "github.com/Vyach12/meal-api/internal/repositories/meal"
-	"github.com/Vyach12/meal-api/internal/services/model"
+	business "github.com/Vyach12/meal-api/internal/services/meal_fetcher/model"
 	"github.com/gomeal/config/pkg/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

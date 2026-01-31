@@ -2,15 +2,15 @@ package meal_repo
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	business "github.com/Vyach12/meal-api/internal/services/model"
+	business "github.com/Vyach12/meal-api/internal/services/meal_fetcher/model"
 )
 
 func (r *repositoryImpl) CreateMeals(ctx context.Context, meals []business.Meal) ([]business.Meal, error) {
-	//TODO: по хорошему сделать создание n meals в одном запросе, а не в разных, если не в падлу будет
 	createdMeals := make([]business.Meal, 0, len(meals))
 
 	txErr := r.transactor.Transaction(ctx, func(ctx context.Context) error {
@@ -24,6 +24,7 @@ func (r *repositoryImpl) CreateMeals(ctx context.Context, meals []business.Meal)
 		return nil
 	})
 	if txErr != nil {
+		fmt.Println("Ошибка транзакции")
 		return nil, txErr
 	}
 
@@ -31,8 +32,8 @@ func (r *repositoryImpl) CreateMeals(ctx context.Context, meals []business.Meal)
 }
 
 func (r *repositoryImpl) createMeal(ctx context.Context, meal business.Meal) (business.Meal, error) {
-	//TODO: Добавить обработку
 	category, err := r.createMealCategory(ctx, meal.Category)
+	fmt.Println("created category with id = ", category.ID)
 	if err != nil {
 		return business.Meal{}, err
 	}
@@ -41,15 +42,26 @@ func (r *repositoryImpl) createMeal(ctx context.Context, meal business.Meal) (bu
 	if err != nil {
 		return business.Meal{}, err
 	}
+	fmt.Println("created cuisine with id = ", cuisine.ID)
 
 	ingrs, err := r.createMealsIngredient(ctx, meal.Ingredients)
 	if err != nil {
 		return business.Meal{}, err
 	}
-	r.saveMeal(ctx, meal, category.ID, cuisine.ID)
+	fmt.Println("created meals ingr")
+
+	mealId, err := r.saveMeal(ctx, meal, category.ID, cuisine.ID)
+	if err != nil {
+		return business.Meal{}, err
+	}
+	fmt.Println("created meal =", mealId)
+
 
 	for i, ingr := range ingrs {
-		r.createMealIngredientLink(ctx, meal.ID, ingr.ID, ingr.Measure, int64(i+1))
+		err = r.createMealIngredientLink(ctx, meal.ID, ingr.ID, ingr.Measure, int64(i+1))
+		if err != nil {
+			return business.Meal{}, err
+		}
 	}
 
 	return business.Meal{}, nil
@@ -169,12 +181,15 @@ func (r *repositoryImpl) saveMeal(ctx context.Context, meal business.Meal, categ
 		PlaceholderFormat(sq.Dollar).
 		Columns("external_id", "name", "category_id", "cuisine_id", "instructions", "image_url", "tags", "youtube_url", "recipe_url").
 		Values(meal.ExternalID, meal.Name, categoryID, cuisineID, meal.Instructions, meal.ImageURL, meal.Tags, meal.YouTubeURL, meal.RecipeURL).
-		Suffix("ON CONFLICT (external_id) DO UPDATE SET updated_at = ?").
-		Suffix("RETURNING id, name").
+		Suffix("ON CONFLICT (external_id) DO UPDATE SET updated_at = ?", time.Now()).
+		Suffix("RETURNING id").
 		ToSql()
 	if err != nil {
 		return 0, err
 	}
+
+	fmt.Println("created query")
+	fmt.Println("created args", len(args))
 
 	var id int64
 	if err := r.db.QueryRow(ctx, query, args...).Scan(&id); err != nil {

@@ -8,6 +8,10 @@ import (
 )
 
 func (r *transactorImpl) Transaction(ctx context.Context, operation func(ctx context.Context) error) error {
+
+	fmt.Println("Start transaction")
+	defer fmt.Println("End transaction")
+
 	tx, err := r.db.BeginTx(ctx, pgx.TxOptions{
 		AccessMode: pgx.ReadWrite,
 	})
@@ -17,7 +21,9 @@ func (r *transactorImpl) Transaction(ctx context.Context, operation func(ctx con
 	defer tx.Rollback(ctx)
 
 	if err := operation(ctx); err != nil {
+		fmt.Println("попытка отката")
 		if rbErr := tx.Rollback(ctx); rbErr != nil {
+			fmt.Println("ошибка отката")
 			return rbErr
 		}
 		return err
@@ -25,7 +31,7 @@ func (r *transactorImpl) Transaction(ctx context.Context, operation func(ctx con
 
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("failed to commit transaction: %w", err)
-	}
+	}	
 
 	return nil
 }

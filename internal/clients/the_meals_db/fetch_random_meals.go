@@ -8,7 +8,7 @@ import (
 
 	"github.com/Vyach12/meal-api/internal/clients/the_meals_db/dto"
 	"github.com/Vyach12/meal-api/internal/clients/the_meals_db/mappers"
-	business "github.com/Vyach12/meal-api/internal/services/model"
+	business "github.com/Vyach12/meal-api/internal/services/meal_fetcher/model"
 )
 
 var (
