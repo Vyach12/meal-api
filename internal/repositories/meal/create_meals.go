@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/Vyach12/meal-api/internal/services/business"
+	business "github.com/Vyach12/meal-api/internal/services/model"
 )
 
 func (r *repositoryImpl) CreateMeals(ctx context.Context, meals []business.Meal) ([]business.Meal, error) {
@@ -41,7 +41,7 @@ func (r *repositoryImpl) createMeal(ctx context.Context, meal business.Meal) (bu
 	if err != nil {
 		return business.Meal{}, err
 	}
-	
+
 	ingrs, err := r.createMealsIngredient(ctx, meal.Ingredients)
 	if err != nil {
 		return business.Meal{}, err
@@ -63,7 +63,7 @@ func (r *repositoryImpl) createMealsIngredient(ctx context.Context, ingredients 
 	for _, meal := range ingredients {
 		insertBuilder = insertBuilder.Values(meal.Name)
 	}
-	
+
 	query, args, err := insertBuilder.
 		Suffix("ON CONFLICT (name) DO UPDATE SET updated_at = ?", time.Now()).
 		Suffix("RETURNING id, name").

@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	themealsdb_client "github.com/Vyach12/meal-api/internal/clients/the_meals_db"
-	"github.com/Vyach12/meal-api/internal/services/business"
+	"github.com/Vyach12/meal-api/internal/services/model"
 	"github.com/gomeal/config/pkg/config"
 )
 

@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/Vyach12/meal-api/cmd/app"
-	"github.com/Vyach12/meal-api/internal/services/business"
+	business "github.com/Vyach12/meal-api/internal/services/model"
 	"github.com/gomeal/config/pkg/config"
 )
 
@@ -27,7 +27,7 @@ func main() {
 
 	//fmt.Println(r)
 
-	v, err := repositories.Meal.CreateMeals(ctx, []business.Meal {r})
+	v, err := repositories.Meal.CreateMeals(ctx, []business.Meal{r})
 	if err != nil {
 		log.Fatal(err)
 	}
