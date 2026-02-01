@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	dto "github.com/Vyach12/meal-api/internal/clients/the_meals_db/dto"
-	"github.com/Vyach12/meal-api/internal/services/business"
+	business "github.com/Vyach12/meal-api/internal/services/meal_fetcher/model"
 	"github.com/samber/lo"
 )
 

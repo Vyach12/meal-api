@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
+	"log/slog"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/Vyach12/meal-api/cmd/app"
-	"github.com/Vyach12/meal-api/internal/services/business"
 	"github.com/gomeal/config/pkg/config"
 )
 
@@ -15,23 +16,29 @@ func main() {
 
 	provider := config.NewProvider(".cfg/values.yaml")
 
-	var (
-		repositories = app.InitRepo(ctx, provider)
-		clients      = app.InitClients(ctx, provider)
+	log := slog.New(
+		slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
 	)
 
-	r, err := clients.MealClient.FetchRandomMeals(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
+	var (
+		repos = app.InitRepo(ctx, provider)
+		clients = app.InitClients(ctx, provider)
+		services = app.InitServices(log, ctx, clients, repos)
+		app = app.InitApplication(log, services.MealFetcherService)
+	)
 
-	//fmt.Println(r)
+	go func () {
+		if err := app.Run(); err != nil {
+			panic(err)
+		}
+	}()
 
-	v, err := repositories.Meal.CreateMeals(ctx, []business.Meal {r})
-	if err != nil {
-		log.Fatal(err)
-	}
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
 
-	fmt.Println(v)
+	<-stop
+
+	app.Stop()
+	log.Info("Application is stopped")
 
 }
